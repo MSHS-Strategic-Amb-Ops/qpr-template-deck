@@ -289,6 +289,7 @@ conn1 <- dbPool(drv = odbc(), dsn = "OAO Cloud DB SoYoun", timeout = 30)
 master_amb_mapping_tbl <- tbl(conn1, "MASTER_AMB_MAPPING")
 
 master_amb_mapping <- master_amb_mapping_tbl %>%
+  filter(DEPT_MANAGED_DEPT_MAP == "Department") %>%
   collect()
 
 clinical_dept_list <- unique(master_amb_mapping$CLINICAL_DEPT_DEPT_MAP)
@@ -305,7 +306,7 @@ reporting_month <- "August 2024"
 footnote_finance <- paste0("Data Source: Finance")
 footnote_productivity <- paste0("Data Source: CPSC, Office of the Dean, and Department of Business Planning")
 footnote_epic <- paste0("Data Source: EPIC")
-
+footnote_utilization <- paste0("Data Source: EPIC and Quarterly Room Assignment Grid")
 
 ```
 
@@ -314,7 +315,7 @@ footnote_epic <- paste0("Data Source: EPIC")
 
 for(i in clinical_dept_list){
 
-  i <- "Tisch Institute/Hematology Oncology"
+  # i <- "Tisch Institute/Hematology Oncology"
 
   # 1 Import in pptx template ----------------------------------------------------
   ppt_temp <- read_pptx("qpr-report-template.pptx")
@@ -335,9 +336,9 @@ for(i in clinical_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = "Performance Overview", 
+    ph_with(value = paste0("Performance Overview | ", i), 
             location = ph_location_label(ph_label = "Title 1")) 
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -354,13 +355,13 @@ for(i in clinical_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Finance - ",i), 
+    ph_with(value = paste0("Finance | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   text_style <- fp_text(font.size = 10, italic = TRUE, color = "#7f7f7f", font.family = "Calibri")
   par_style <- fp_par(text.align = "left", padding.bottom = 5)
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_finance, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -371,11 +372,11 @@ for(i in clinical_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Payer Mix - ",i), 
+    ph_with(value = paste0("Payer Mix | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_epic, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -386,11 +387,11 @@ for(i in clinical_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("EPIC Open Encounters - ",i), 
+    ph_with(value = paste0("EPIC Open Encounters | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_epic, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -407,11 +408,11 @@ for(i in clinical_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Productivity Summary - ",i), 
+    ph_with(value = paste0("Productivity Summary | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_productivity, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -422,11 +423,11 @@ for(i in clinical_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Productivity under P50 - ",i), 
+    ph_with(value = paste0("Productivity under P50 | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_productivity, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -443,11 +444,11 @@ for(i in clinical_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Volume - ",i), 
+    ph_with(value = paste0("Volume | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_epic, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -458,11 +459,11 @@ for(i in clinical_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Access - ",i), 
+    ph_with(value = paste0("Access | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_epic, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -473,37 +474,61 @@ for(i in clinical_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Referrals - ",i), 
+    ph_with(value = paste0("Referrals | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_epic, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Slide Number Placeholder 3"))
   slide_num <- slide_num + 2
   
-  # 7 Appendix Section ---------------------------------------------------------
+  # 7 Room Utilization Section ------------------------------------------------
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Section Header", master = "Default Theme")
-  ppt_temp <- ph_with(ppt_temp, value = paste0("Volume and Access"),
+  ppt_temp <- ph_with(ppt_temp, value = paste0("Exam Room Utilization"),
                       location = ph_location_label(ph_label = "Title 1"))
   
-  # 7.1 Metric Definitions -----------------------------------------------------
+  # 7.1 Turns per Room per Session ------------------------------------------------
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Metric Definisions"), 
+    ph_with(value = paste0("Turns per Room per Session | ",i), 
+            location = ph_location_label(ph_label = "Title 1")) 
+  ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_utilization, prop = text_style), fp_p = par_style),
+                      location = ph_location_label(ph_label = "Footer Placeholder 4"))
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
+                                                             text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
+                      location = ph_location_label(ph_label = "Date Placeholder 2"))
+  ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
+                      location = ph_location_label(ph_label = "Slide Number Placeholder 3"))
+  slide_num <- slide_num + 2
+  
+  # 8 Appendix Section ---------------------------------------------------------
+  ppt_temp <- ppt_temp %>%
+    add_slide(layout = "Section Header", master = "Default Theme")
+  ppt_temp <- ph_with(ppt_temp, value = paste0("Appendix"),
+                      location = ph_location_label(ph_label = "Title 1"))
+  
+  # 8.1 Metric Definitions -----------------------------------------------------
+  ppt_temp <- ppt_temp %>%
+    add_slide(layout = "Title and Content", master = "Default Theme")
+  ppt_temp <- ppt_temp %>% 
+    ph_with(value = paste0("Metric Definitions"), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Slide Number Placeholder 3"))
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
+                                                             text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
+                      location = ph_location_label(ph_label = "Date Placeholder 2"))
   
   
 
   # Export Template ------------------------------------------------------------
   dir <- "~/qpr-template-deck/template-output/"
-  print(ppt_temp, target = paste0(dir, paste0("FOPR_Report_", gsub("/", "_", i), ".pptx")))
+  print(ppt_temp, target = paste0(dir, paste0("Performance Report_", gsub("/", "_", i), "_", reporting_month, ".pptx")))
   
 }
 
@@ -536,9 +561,9 @@ for(i in medicine_sub_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = "Performance Overview", 
+    ph_with(value = paste0("Performance Overview | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -555,13 +580,13 @@ for(i in medicine_sub_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Finance - ",i), 
+    ph_with(value = paste0("Finance | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   text_style <- fp_text(font.size = 10, italic = TRUE, color = "#7f7f7f", font.family = "Calibri")
   par_style <- fp_par(text.align = "left", padding.bottom = 5)
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_finance, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -572,11 +597,11 @@ for(i in medicine_sub_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Payer Mix - ",i), 
+    ph_with(value = paste0("Payer Mix | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_epic, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -587,11 +612,11 @@ for(i in medicine_sub_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("EPIC Open Encounters - ",i), 
+    ph_with(value = paste0("EPIC Open Encounters | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_epic, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -608,11 +633,11 @@ for(i in medicine_sub_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Productivity Summary - ",i), 
+    ph_with(value = paste0("Productivity Summary | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_productivity, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -623,11 +648,11 @@ for(i in medicine_sub_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Productivity under P50 - ",i), 
+    ph_with(value = paste0("Productivity under P50 | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_productivity, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -644,11 +669,11 @@ for(i in medicine_sub_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Volume - ",i), 
+    ph_with(value = paste0("Volume | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_epic, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -659,11 +684,11 @@ for(i in medicine_sub_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Access - ",i), 
+    ph_with(value = paste0("Access | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_epic, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -674,11 +699,32 @@ for(i in medicine_sub_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Referrals - ",i), 
+    ph_with(value = paste0("Referrals | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_epic, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
+                                                             text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
+                      location = ph_location_label(ph_label = "Date Placeholder 2"))
+  ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
+                      location = ph_location_label(ph_label = "Slide Number Placeholder 3"))
+  slide_num <- slide_num + 2
+  
+  # 7 Room Utilization Section ------------------------------------------------
+  ppt_temp <- ppt_temp %>%
+    add_slide(layout = "Section Header", master = "Default Theme")
+  ppt_temp <- ph_with(ppt_temp, value = paste0("Exam Room Utilization"),
+                      location = ph_location_label(ph_label = "Title 1"))
+  
+  # 7.1 Turns per Room per Session ------------------------------------------------
+  ppt_temp <- ppt_temp %>%
+    add_slide(layout = "Title and Content", master = "Default Theme")
+  ppt_temp <- ppt_temp %>% 
+    ph_with(value = paste0("Turns per Room per Session | ",i), 
+            location = ph_location_label(ph_label = "Title 1")) 
+  ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_utilization, prop = text_style), fp_p = par_style),
+                      location = ph_location_label(ph_label = "Footer Placeholder 4"))
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
@@ -688,18 +734,18 @@ for(i in medicine_sub_dept_list){
   # 7 Appendix Section ---------------------------------------------------------
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Section Header", master = "Default Theme")
-  ppt_temp <- ph_with(ppt_temp, value = paste0("Volume and Access"),
+  ppt_temp <- ph_with(ppt_temp, value = paste0("Appendix"),
                       location = ph_location_label(ph_label = "Title 1"))
   
   # 7.1 Metric Definitions -----------------------------------------------------
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Metric Definisions"), 
+    ph_with(value = paste0("Metric Definitions"), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Slide Number Placeholder 3"))
-  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://cran.r-project.org/index.html",
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
                                                              text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Date Placeholder 2"))
   
@@ -707,7 +753,7 @@ for(i in medicine_sub_dept_list){
 
   # Export Template ------------------------------------------------------------
   dir <- "~/qpr-template-deck/template-output/"
-  print(ppt_temp, target = paste0(dir, paste0("FOPR_Report_DOM_", gsub("/", "_", i), ".pptx")))
+  print(ppt_temp, target = paste0(dir, paste0("Performance Report_DOM_", gsub("/", "_", i), "_", reporting_month, ".pptx")))
   
 }
 
