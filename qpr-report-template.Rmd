@@ -629,7 +629,22 @@ for(i in medicine_sub_dept_list){
   ppt_temp <- ph_with(ppt_temp, value = paste0("Physician Productivity"),
                       location = ph_location_label(ph_label = "Title 1"))
 
-  # 5.1 Productivity Summary ---------------------------------------------------
+  # 5.1 WRVUs and Collections --------------------------------------------------
+  ppt_temp <- ppt_temp %>%
+    add_slide(layout = "Title and Content", master = "Default Theme")
+  ppt_temp <- ppt_temp %>% 
+    ph_with(value = paste0("WRVUs and Collections | ",i), 
+            location = ph_location_label(ph_label = "Title 1")) 
+  ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_productivity, prop = text_style), fp_p = par_style),
+                      location = ph_location_label(ph_label = "Footer Placeholder 4"))
+  ppt_temp <- ph_with(ppt_temp, value = fpar(hyperlink_ftext(href = "https://tableau.mountsinai.org/#/workbooks/16184?:origin=card_share_link",
+                                                             text = "Finance & Operational Performance Dashboard", prop = text_style), fp_p = par_style),
+                      location = ph_location_label(ph_label = "Date Placeholder 2"))
+  ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(slide_num, prop = text_style), fp_p = par_style),
+                      location = ph_location_label(ph_label = "Slide Number Placeholder 3"))
+  slide_num <- slide_num + 1
+  
+  # 5.2 Productivity Summary ---------------------------------------------------
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
@@ -648,7 +663,7 @@ for(i in medicine_sub_dept_list){
   ppt_temp <- ppt_temp %>%
     add_slide(layout = "Title and Content", master = "Default Theme")
   ppt_temp <- ppt_temp %>% 
-    ph_with(value = paste0("Productivity under P50 | ",i), 
+    ph_with(value = paste0("Physicians under P50 | ",i), 
             location = ph_location_label(ph_label = "Title 1")) 
   ppt_temp <- ph_with(ppt_temp, value = fpar(ftext(footnote_productivity, prop = text_style), fp_p = par_style),
                       location = ph_location_label(ph_label = "Footer Placeholder 4"))
